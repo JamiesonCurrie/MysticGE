@@ -24,8 +24,8 @@
  * 
  */
 
-#ifndef GRAPHICSMANAGER_OGRE_H
-#define GRAPHICSMANAGER_OGRE_H
+#ifndef GRAPHICSMANAGER_HPP
+#define GRAPHICSMANAGER_HPP
 
 #include <Ogre.h>
 #include <OgreRenderWindow.h>
@@ -33,38 +33,40 @@
 
 namespace MysticGE {
 namespace Graphics {
-namespace OGRE {
 	
-	#define PLUGIN_CONFIG "Plugins.cfg";
-	#define GRAPHICS_CONFIG "Ogre.cfg";
-	#define RESOURCE_CONFIG "resources.cfg";
+	#define PLUGIN_CONFIG "../../../resources/plugins.cfg";
+	#define GRAPHICS_CONFIG "../../../resources/ogre.cfg";
+	#define RESOURCE_CONFIG "../../../resources/resources.cfg";
 	
-	class GraphicsManager_OGRE
+	class GraphicsManager
 	{
 		public:
-			GraphicsManager_OGRE(void);
-			~GraphicsManager_OGRE(void);
+			~GraphicsManager(void);
+			static GraphicsManager* getSingletonPtr(void);
 			
 			void initialiseWithSettingsDialog(Ogre::String inWindowTitle);
+			
 			void render(void);
 			
 			Ogre::Root*			getRootNode(void);
 			Ogre::RenderWindow*	getRenderWindow(void);
 			Ogre::SceneManager*	getSceneManager(void);
 			
-			Ogre::SceneNode*	createSceneNode(Ogre::String inNodeName);
-			Ogre::Entity*		createMesh(Ogre::String inNodeName, Ogre::String inMeshFilename);
-			
-			void	destroySceneNode(Ogre::String inNodeName);
-			void	destroyMesh(Ogre::Entity *inMesh);
+			//Ogre::SceneNode*	createSceneNode(Ogre::String inNodeName);
+			//Ogre::Entity*		createMesh(Ogre::String inNodeName, Ogre::String inMeshFilename);
 			
 		private:
+			GraphicsManager(void);
+			GraphicsManager( const GraphicsManager& ) {}
+			GraphicsManager & operator = ( const GraphicsManager& );
+			
 			void setupResources(void);
-			void loadResources(void);
 			
 			Ogre::Root			*mRootNode;
 			Ogre::RenderWindow	*mRenderWindow;
 			Ogre::SceneManager	*mSceneManager;
+			
+			static GraphicsManager *mGraphicsManager;
 	};
 }
 }

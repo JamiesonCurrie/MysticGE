@@ -3,7 +3,6 @@
 
 #include <OgreRenderWindow.h>
 
-
 #include "InputDeviceManager.hpp"
 #include "InputWatcher.hpp"
 
@@ -12,39 +11,38 @@ namespace Input {
 	class InputManager
 	{
 		public:
-			virtual ~InputManager(void);
+			~InputManager(void);
+			static InputManager* getSingletonPtr( void ) ;
 			
-			void initialise( Ogre::RenderWindow *renderWindow );
+			void initialise( const Ogre::RenderWindow& renderWindow );
 			void capture( void );
 			
 			//InputWatcher Accesors
-			void addKeyListener( OIS::KeyListener *keyListener, const std::string& instanceName );
-			void addMouseListener( OIS::MouseListener *mouseListener, const std::string& instanceName );
-			void addJoyStickListener( OIS::JoyStickListener *joyStickListener, const std::string& instanceName );
+			void addKeyListener( const OIS::KeyListener*& keyListener, const std::string& instanceName );
+			void addMouseListener( const OIS::MouseListener*& mouseListener, const std::string& instanceName );
+			void addJoyStickListener( const OIS::JoyStickListener*& joyStickListener, const std::string& instanceName );
 			
 			void removeKeyListener( const std::string& instanceName );
-			void removeKeyListener( OIS::KeyListener *keyListener );
+			void removeKeyListener( OIS::KeyListener*& keyListener );
 			void removeMouseListener( const std::string& instanceName );
-			void removeMouseListener( OIS::MouseListener *mouseListener );
+			void removeMouseListener( OIS::MouseListener*& mouseListener );
 			void removeJoyStickListener( const std::string& instanceName );
-			void removeJoyStickListener( OIS::JoyStickListener *joyStickListener );
+			void removeJoyStickListener( OIS::JoyStickListener*& joyStickListener );
 			
 			void removeAllListeners( void );
 			void removeAllKeyListeners( void );
 			void removeAllMouseListeners( void );
 			void removeAllJoyStickListeners( void );
 			
-			static InputManager* getSingletonPtr( void ) ;
-
 		private:
 			InputManager( void );
 			InputManager( const InputManager& ) {}
 			InputManager & operator = ( const InputManager& );
 			
-			InputDeviceManager	*mInputDeviceManager;
-			InputWatcher		mInputWatcher;
+			static InputManager* mInputManager;
 			
-			static InputManager *mInputManager;
+			InputDeviceManager*	mInputDeviceManager;
+			InputWatcher*		mInputWatcher;
 	};
 }
 }

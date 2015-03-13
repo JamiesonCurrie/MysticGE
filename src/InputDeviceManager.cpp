@@ -3,7 +3,7 @@
 namespace MysticGE {
 namespace Input {
 
-	InputDeviceManager *InputDeviceManager::mInputDeviceManager;
+	InputDeviceManager* InputDeviceManager::mInputDeviceManager;
 
 	InputDeviceManager::InputDeviceManager( void ) :
 		mMouse( 0 ),
@@ -20,6 +20,7 @@ namespace Input {
 			}
 			if (mKeyboard) {
 				mInputSystem->destroyInputObject(mKeyboard);
+				mKeyboard = 0;
 			}
 			if (getNumberOfJoySticks() > 0) {
 				std::vector<OIS::JoyStick*>::iterator itJoySticks = mJoySticks.begin();
@@ -43,16 +44,16 @@ namespace Input {
 		return mInputDeviceManager;
 	}
 
-	InputDeviceManager::initialise( Ogre::RenderWindow* renderWindow )
+	InputDeviceManager::initialise( const Ogre::RenderWindow& renderWindow )
 	{
 		OIS::ParamList paramList;
 		size_t windowHnd = 0;
 		std::ostringstream windowHndStr;
 
 #if defined OIS_WIN32_PLATFORM
-		renderWindow->getcustomAttribute( "WINDOW", &windowHnd );
+		renderWindow.getcustomAttribute( "WINDOW", &windowHnd );
 #elif defined OIS_LINUX_PLATFORM
-		renderWindow->getCustomeAttribute( "GLXWINDOW", &windowHnd );
+		renderWindow.getCustomeAttribute( "GLXWINDOW", &windowHnd );
 #endif
 
 		windowHndStr << (unsigned int) windowHnd;
@@ -70,7 +71,7 @@ namespace Input {
 
 			unsigned int width, height, depth;
 			int left, top;
-			renderWindow->getMetrics(width, height, depth, left, top);
+			renderWindow.getMetrics(width, height, depth, left, top);
 			setWindowExtents(width, height);
 		}
 		
@@ -101,20 +102,30 @@ namespace Input {
 		return;
 	}
 
-	void InputDeviceManager::setWindowExtents(unsigned int width, unsigned int height) {
+	void InputDeviceManager::setWindowExtents(unsigned int width, unsigned int height)
+	{
 		mMouse->getMouseState().width = width;
 		mMouse->getMouseState().height = height;
 		
 		return;
 	}
-
-	void InputDeviceManager::setEventCallbackWatcher(InputDeviceListener *listener) {
+	
+	void InputDeviceManager::setKeyboardEventListener(const OIS::KeyListener*& listener)
+	{
 		if (mKeyboard) {
 			mKeyboard->setEventCallback(listener);
 		}
+	}
+	
+	void InputDeviceManager::setMouseEventListener(const OIS::MouseListener*& listener)
+	{
 		if (mMouse) {
 			mMouse->setEventCallback(listener);
 		}
+	}
+	
+	void InputDeviceManager::setJoyStickEventListener(const OIS::JoyStickListener*& listener)
+	{
 		if (getNumberOfJoySticks() > 0) {
 			std::vector<OIS::JoyStick*>::iterator itJoySticks = mJoySticks.begin();
 			for (; itJoySticks != mJoySticks.end(); mJoySticks++) {
@@ -123,15 +134,18 @@ namespace Input {
 		}
 	}
 
-	OIS::Mouse* InputDeviceManager::getMouse(void) {
+	OIS::Mouse* InputDeviceManager::getMouse(void)
+	{
 		return mMouse;
 	}
 
-	OIS::Keyboard* InputDeviceManager::getKeyboard(void) {
+	OIS::Keyboard* InputDeviceManager::getKeyboard(void)
+	{
 		return mKeyboard;
 	}
 
-	OIS::JoyStick* InputDeviceManager::getJoyStick(unsigned int index) {
+	OIS::JoyStick* InputDeviceManager::getJoyStick(unsigned int index)
+	{
 		if (index > 0 && index < mJoySticks.size()) {
 			return mJoySticks[index];
 		}
@@ -139,7 +153,8 @@ namespace Input {
 		return NULL;
 	}
 
-	int InputDeviceManager::getNumberOfJoySticks(void) {
+	int InputDeviceManager::getNumberOfJoySticks(void)
+	{
 		return (int) mJoySticks.size();
 	}
 

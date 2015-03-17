@@ -3,87 +3,104 @@
 namespace MysticGE {
 namespace Graphics {
 	
-GraphicsManager::GraphicsManager(void) {
-	mRootNode = new Ogre::Root(PLUGIN_CONFIG, GRAPHICS_CONFIG);
-}
+	GraphicsManager::GraphicsManager(void) : 
+		mRootNode( 0 ),
+		mRenderWindow( 0 ),
+		mSceneManager( 0 )
+	{ }
 
-GraphicsManager::~GraphicsManager(void) {
-	delete mRootNode;
-}
-
-void GraphicsManager::initialiseWithSettingsDialog(Ogre::String inWindowTitle) {
-	mRootNode->showConfigDialog();
-	mRootNode->initialise(true, inWindowTitle);
-	mRootNode->saveConfig();
-	mRenderWindow = mRootNode->getAutoCreatedWindow();
-	
-	setupResources();
-	
-	mSceneManager = mRootNode->createSceneManager(Ogre::ST_GENERIC, "DefaultSceneManager");
-	
-	return;
-}
-
-void GraphicsManager::render(void) {
-	mRootNode->renderOneFrame();
-	return;
-}
-
-void GraphicsManager::setupResources(void) {
-	Ogre::ConfigFile cf;
-	cf.load(RESOURCE_CONFIG);
-	
-	Ogre::ConfigFile::SectionIterator itSection = cf.getSectionIterator();
-	
-	Ogre::String section, type, arch;
-	while (itSection.hasMoreElements()) {
-		section = itSection.peekNextKey();
-		Ogre::ConfigFile::SettingsMultiMap* mapSettings = itSection.getNext();
-		Ogre::ConfigFile::SettingsMultiMap::iterator itSettings = mapSettings->begin();
-		while (itSettings != mapSettings->end()) {
-			type = itSettings->first;
-			arch = itSettings->second;
-			
-			Ogre::ResourceGroupManager::getSingleton().addResourceLocation(arch, type, section);
-			
-			++itSettings;
-		}
+	GraphicsManager::~GraphicsManager(void) 
+	{
+		delete mRootNode;
 	}
-	
-	Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
-	
-	return;
-}
 
-Ogre::Root* GraphicsManager::getRootNode(void) {
-	return mRootNode;
-}
+	void GraphicsManager::initialiseWithSettingsDialog(Ogre::String inWindowTitle) 
+	{
+		mRootNode = new Ogre::Root(PLUGIN_CONFIG, GRAPHICS_CONFIG);
+		mRootNode->showConfigDialog();
+		mRootNode->initialise(true, inWindowTitle);
+		mRootNode->saveConfig();
+		mRenderWindow = mRootNode->getAutoCreatedWindow();
+		
+		setupResources();
+		
+		mSceneManager = mRootNode->createSceneManager(Ogre::ST_GENERIC, "DefaultSceneManager");
+		
+		return;
+	}
 
-Ogre::RenderWindow* GraphicsManager::getRenderWindow(void) {
-	return mRenderWindow;
-}
+	void GraphicsManager::render(void) 
+	{
+		mRootNode->renderOneFrame();
+		
+		return;
+	}
 
-Ogre::SceneManager* GraphicsManager::getSceneManager(void) {
-	return mSceneManager;
-}
+	void GraphicsManager::setupResources(void) 
+	{
+		Ogre::ConfigFile cf;
+		cf.load(RESOURCE_CONFIG);
+		
+		Ogre::ConfigFile::SectionIterator itSection = cf.getSectionIterator();
+		
+		Ogre::String section, type, arch;
+		while (itSection.hasMoreElements()) {
+			section = itSection.peekNextKey();
+			Ogre::ConfigFile::SettingsMultiMap* mapSettings = itSection.getNext();
+			Ogre::ConfigFile::SettingsMultiMap::iterator itSettings = mapSettings->begin();
+			while (itSettings != mapSettings->end()) {
+				type = itSettings->first;
+				arch = itSettings->second;
+				
+				Ogre::ResourceGroupManager::getSingleton().addResourceLocation(arch, type, section);
+				
+				++itSettings;
+			}
+		}
+		
+		Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
+		
+		return;
+	}
 
-/*Ogre::SceneNode* GraphicsManager::createSceneNode(Ogre::String inNodeName) {
-	return mSceneManager->getRootSceneNode()->createChildSceneNode(inNodeName);
-}
+	Ogre::Root* GraphicsManager::getRootNode(void) 
+	{
+		return mRootNode;
+	}
 
-Ogre::Entity* GraphicsManager::createMesh(Ogre::String inNodeName, Ogre::String inMeshFilename) {
-	return mSceneManager->createEntity(inNodeName, inMeshFilename);
-}
+	Ogre::RenderWindow* GraphicsManager::getRenderWindow(void) 
+	{
+		return mRenderWindow;
+	}
 
-void GraphicsManager::destroySceneNode(Ogre::String inNodeName) {
-	mSceneManager->destroySceneNode(inNodeName);
-	return;
-}
+	Ogre::SceneManager* GraphicsManager::getSceneManager(void) 
+	{
+		return mSceneManager;
+	}
 
-void GraphicsManager::destroyMesh(Ogre::Entity* inMesh) {
-	mSceneManager->destroyEntity(inMesh);
-	return;
-}*/
+	Ogre::SceneNode* GraphicsManager::createSceneNode(Ogre::String inNodeName) 
+	{
+		return mSceneManager->getRootSceneNode()->createChildSceneNode(inNodeName);
+	}
+
+	Ogre::Entity* GraphicsManager::createMesh(Ogre::String inNodeName, Ogre::String inMeshFilename) 
+	{
+		return mSceneManager->createEntity(inNodeName, inMeshFilename);
+	}
+
+	void GraphicsManager::destroySceneNode(Ogre::String inNodeName) 
+	{
+		mSceneManager->destroySceneNode(inNodeName);
+		
+		return;
+	}
+
+	void GraphicsManager::destroyMesh(Ogre::Entity* inMesh) 
+	{
+		mSceneManager->destroyEntity(inMesh);
+		
+		return;
+	}
 
 }
 }

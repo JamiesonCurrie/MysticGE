@@ -6,19 +6,21 @@ namespace Game {
 
 	GameManager::GameManager( void ) : 
 		mGraphicsManager( 0 ),
-		mInputManager( 0 )
+		mInputManager( 0 ),
 		mTimeCurrentFrame( 0 ),
 		mTimeLastFrame( 0 ),
 		mTimeSinceLstFrame( 0 ),
 		mShutdown( false )
 	{}
 
-	GameManager::~GameManager() {
+	GameManager::~GameManager() 
+	{
 		delete mInputManager;
 		delete mGraphicsManager;
 	}
 
-	GameManager* GameManager::getSingletonPtr(void) {
+	GameManager* GameManager::getSingletonPtr(void) 
+	{
 		if (!mGameManager) {
 			mGameManager = new GameManager();
 		}
@@ -26,7 +28,8 @@ namespace Game {
 		return mGameManager;
 	}
 	
-	void GameManager::initialise(std::string inGameName) {
+	void GameManager::initialise(std::string inGameName) 
+	{
 		mGraphicsManager = GraphicsManager::getSingletonPtr();
 		mGraphicsManager->initialiseWithSettingsDialog(inGameName);
 		
@@ -36,11 +39,14 @@ namespace Game {
 		return;
 	}
 	
-	void GameManager::run(void) {
-		while (!mShutdown) {
+	void GameManager::run(void)
+	{
+		while (!mShutdown) 
+		{
 			mTimeCurrentFrame = mGraphicsManager->getRootNode().getTimer()->getMicroseconds();
 			mTimeSinceLastFrame = mTimeCurrentFrame - mTimeLastFrame;
 			mTimeLastFrame = mTimeCurrentFrame;
+			
 			float seconds = mTimeSinceLastFrame / 1000000.0f;
 			float fps = 1 / seconds;
 			
@@ -54,7 +60,8 @@ namespace Game {
 		return;
 	}
 	
-	void GameManager::requestShutdown(void) {
+	void GameManager::requestShutdown(void) 
+	{
 		mShutdown = true;
 	}
 }

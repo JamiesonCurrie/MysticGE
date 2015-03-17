@@ -13,7 +13,6 @@ namespace Input {
 			~InputWatcher( void );
 			static InputWatcher* getSingletonPtr( void ) ;
 			
-			/**Watcher**/
 			void addKeyListener( OIS::KeyListener*& keyListener, const std::string& instanceName );
 			void addMouseListener( OIS::MouseListener*& mouseListener, const std::string& instanceName );
 			void addJoyStickListener( OIS::JoyStickListener*& joyStickListener, const std::string& instanceName );
